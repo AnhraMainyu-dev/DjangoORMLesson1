@@ -5,6 +5,8 @@ class Image(models.Model):
     order = models.IntegerField(blank=True, null=True)
     alt = models.CharField(max_length=200, blank=True)
     location = models.ForeignKey('Location', related_name='images', on_delete=models.CASCADE)
+    class Meta:
+        ordering = ['order']
 
 class Location(models.Model):
     title = models.CharField(max_length=50)
