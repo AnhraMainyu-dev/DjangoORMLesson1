@@ -3,9 +3,10 @@ from django.templatetags.static import static
 from catalog.models import Location
 from django.http import HttpResponse
 from django.http.response import JsonResponse
+from django.urls import reverse
 
 
-def get_location(request, place_id):
+def get_location_info(request, place_id):
     location = get_object_or_404(Location, id=place_id)
     location_formatted_data = {
     "title": location.title,
@@ -35,7 +36,7 @@ def show_home(request):
                 "properties": {
                     "title": place.title,
                     "placeId": place.id,
-                    "detailsUrl": static("places/moscow_legends.json")
+                    "detailsUrl": reverse('place_info', args=[place.id])
                 }
             }
             for place in Location.objects.all()
