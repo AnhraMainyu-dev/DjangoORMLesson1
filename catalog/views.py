@@ -1,34 +1,44 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.templatetags.static import static
+from catalog.models import Location
+from django.http import HttpResponse
+from django.http.response import JsonResponse
+
+
+def get_location(request, place_id):
+    location = get_object_or_404(Location, id=place_id)
+    location_formatted_data = {
+    "title": location.title,
+    "imgs": [
+        img.file.url for img in location.images.all()
+    ],
+    "description_short": location.description_short,
+    "description_long": location.description_long,
+    "coordinates": {
+        "lng": location.coordinates_x,
+        "lat": location.coordinates_y,
+    }
+}
+    return JsonResponse(location_formatted_data, safe=False, json_dumps_params={'ensure_ascii': False, 'indent': 2})
+
 
 def show_home(request):
     places = {
         "type": "FeatureCollection",
         "features": [
-        {
-          "type": "Feature",
-          "geometry": {
-            "type": "Point",
-            "coordinates": [37.62, 55.793676]
-          },
-          "properties": {
-            "title": "«Легенды Москвы",
-            "placeId": "moscow_legends",
-            "detailsUrl": static("places/moscow_legends.json")
-          }
-        },
-        {
-          "type": "Feature",
-          "geometry": {
-            "type": "Point",
-            "coordinates": [37.64, 55.753676]
-          },
-          "properties": {
-            "title": "Крыши24.рф",
-            "placeId": "roofs24",
-            "detailsUrl": static("places/roofs24.json")
-          }
-        }
-      ]
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [place.coordinates_x, place.coordinates_y]
+                },
+                "properties": {
+                    "title": place.title,
+                    "placeId": place.id,
+                    "detailsUrl": static("places/moscow_legends.json")
+                }
+            }
+            for place in Location.objects.all()
+        ]
     }
     return render(request, 'index.html', {"places": places})

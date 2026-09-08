@@ -19,9 +19,10 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
-from catalog.views import show_home
+from catalog.views import show_home, get_location
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", show_home)
+    path("", show_home),
+    path('places/<int:place_id>/', get_location)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
