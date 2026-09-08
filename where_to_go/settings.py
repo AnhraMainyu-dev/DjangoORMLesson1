@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'catalog.apps.CatalogConfig',
-    'adminsortable2'
+    'adminsortable2',
+    'tinymce'
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,4 @@ MAILERS = {
         "BACKEND": "django.core.mail.backends.console.EmailBackend",
     },
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
