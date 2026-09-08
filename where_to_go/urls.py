@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
-from where_to_go.views import show_home
+from catalog.views import show_home
 
 urlpatterns = [
     path("admin/", admin.site.urls),
