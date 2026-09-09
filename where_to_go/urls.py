@@ -15,15 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
-from django.urls import path, include
-from django.conf.urls.static import static
 from django.conf import settings
-from catalog.views import show_home, get_location_info
+from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
+
+from catalog.views import get_location_info, show_home
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", show_home),
-    path('places/<int:place_id>/', get_location_info, name='place_info'),
-    path('tinymce/', include('tinymce.urls')),
+    path("places/<int:place_id>/", get_location_info, name="place_info"),
+    path("tinymce/", include("tinymce.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
