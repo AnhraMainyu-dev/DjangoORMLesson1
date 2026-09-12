@@ -8,14 +8,15 @@ from catalog.models import Image, Location
 class ImageInline(SortableStackedInline, admin.TabularInline):
     model = Image
     readonly_fields = ["image_preview"]
+    autocomplete_fields = ["location"]
     fields = ["file", "image_preview", "order"]
 
     def image_preview(self, obj):
-        return format_html('<img src="{}" height={}>', obj.file.url, 200)
+        return format_html('<img src="{}" style="max-height: 200px; max-width: 300px;">', obj.file.url)
 
 
 class LocationAdmin(SortableAdminBase, admin.ModelAdmin):
-    list_display = ["title", "coordinates_x"]
+    list_display = ["title"]
     search_fields = ["title"]
     inlines = [ImageInline]
 
@@ -28,6 +29,6 @@ class ImageAdmin(admin.ModelAdmin):
         return format_html('<img src="{}" height={}>', obj.file.url, 200)
 
 
-# Register your models here.
+
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Image, ImageAdmin)
