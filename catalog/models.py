@@ -5,7 +5,7 @@ from tinymce.models import HTMLField
 class Image(models.Model):
     file = models.ImageField(upload_to="images/", verbose_name="Путь к файлу изображения")
     order = models.PositiveIntegerField(default=0, verbose_name="Порядок отображения на странице локации")
-    alt = models.CharField(max_length=200, blank=True, verbose_name="Текстовое описание изображения")
+    alt = models.CharField(max_length=200, blank=True, verbose_name="Имя файла")
     location = models.ForeignKey(
         "Location", related_name="images", on_delete=models.CASCADE, verbose_name="Локация, к которой изображение привязано")
 
