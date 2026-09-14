@@ -6,7 +6,9 @@ from catalog.models import Location
 
 
 def get_location_info(request, place_id):
-    location = get_object_or_404(Location, id=place_id)
+    location = get_object_or_404(
+        Location.objects.prefetch_related("images"), id=place_id
+    )
     location_details = {
         "title": location.title,
         "imgs": [img.file.url for img in location.images.all()],
@@ -32,7 +34,7 @@ def show_home_page(request):
                 "type": "Feature",
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [place.latitude, place.longitude],
+                    "coordinates": [place.longitude, place.latitude],
                 },
                 "properties": {
                     "title": place.title,

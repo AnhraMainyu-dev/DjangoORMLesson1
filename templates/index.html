@@ -121,6 +121,7 @@
     map.setView([55.753989, 37.623191], 11);
 
     L.tileLayer.provider('OpenStreetMap.Mapnik').addTo(map);
+    {# L.tileLayer.provider('OpenStreetMap.HOT').addTo(map); - ссылка, если базовый сурс забанен#}
 
     var sidebar = L.control.sidebar('sidebar', {
       closeButton: true,

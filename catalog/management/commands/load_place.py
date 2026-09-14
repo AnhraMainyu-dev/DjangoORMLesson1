@@ -1,8 +1,15 @@
+import sys
+import time
+
 import requests
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 
 from catalog.models import Image, Location
+
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 
 class Command(BaseCommand):
@@ -21,8 +28,8 @@ class Command(BaseCommand):
             defaults={
                 "short_description": place["description_short"],
                 "long_description": place["description_long"],
-                "latitude": place["coordinates"]["lng"],
-                "longitude": place["coordinates"]["lat"],
+                "latitude": place["coordinates"]["lat"],
+                "longitude": place["coordinates"]["lng"],
             },
         )
 
@@ -31,11 +38,24 @@ class Command(BaseCommand):
             return
 
         for order, image_url in enumerate(place["imgs"]):
-            image_response = requests.get(image_url)
-            image_response.raise_for_status()
+            try:
+                image_response = requests.get(image_url)
+                image_response.raise_for_status()
+            except requests.exceptions.HTTPError as e:
+                eprint(f"Ошибка {e}")
+                continue
+            except requests.exceptions.ConnectionError as e:
+                eprint(f"Ошибка соединения - {e}.")
+                time.sleep(10)
+                continue
+
             filename = image_url.split("/")[-1]
 
-            image = Image(location=location, order=order, alt=filename)
-            image.file.save(filename, ContentFile(image_response.content), save=True)
+            Image.objects.create(
+                location=location,
+                order=order,
+                file=ContentFile(image_response.content, name=filename),
+                alt=filename,
+            )
 
         self.stdout.write("Готово")
